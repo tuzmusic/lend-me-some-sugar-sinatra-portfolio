@@ -12,6 +12,7 @@ gem 'pry'
 gem 'pry-nav'
 gem 'rack-flash3'
 gem 'sinatra-flash'
+gem 'bcrypt'
 
 group :test do
   gem 'rspec'
