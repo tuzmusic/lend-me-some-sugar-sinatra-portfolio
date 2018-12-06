@@ -8,3 +8,8 @@ require 'sinatra/activerecord/rake'
 task :console do
   Pry.start
 end
+
+task :generate_all do
+  require_all 'generator' 
+  SiteGenerator.new.call
+end

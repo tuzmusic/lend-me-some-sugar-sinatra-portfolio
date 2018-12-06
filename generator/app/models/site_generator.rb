@@ -28,6 +28,6 @@ class SiteGenerator
   def call
     generate_generator_classes
     generate_migrations
-    # generate_controllers
+    generate_controllers
   end
 end
