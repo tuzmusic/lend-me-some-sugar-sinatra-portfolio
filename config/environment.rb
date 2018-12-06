@@ -1,4 +1,5 @@
 ENV['SINATRA_ENV'] ||= "development"
+$LOADED_FEATURES << 'fake/active_support/core_ext/hash'
 
 require 'bundler/setup'
 Bundler.require(:default, ENV['SINATRA_ENV'])
