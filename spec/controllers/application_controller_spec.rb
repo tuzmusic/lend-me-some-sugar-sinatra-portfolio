@@ -41,27 +41,27 @@ describe ApplicationController do
     end
 
     it "directs user to the index page once they've signed up"  do
-      SpecHelper.sign_up_user  
+      UserHelper.sign_up_user  
       expect(last_response.location).to include("/index")
     end
 
     it 'does not let a user sign up without a username' do
-      SpecHelper.sign_up_user  
+      UserHelper.sign_up_user  
       expect(last_response.location).to include('/signup')
     end
 
     it 'does not let a user sign up without an email' do
-      SpecHelper.sign_up_user  
+      UserHelper.sign_up_user  
       expect(last_response.location).to include('/signup')
     end
 
     it 'does not let a user sign up without a password' do
-      SpecHelper.sign_up_user  
+      UserHelper.sign_up_user  
       expect(last_response.location).to include('/signup')
     end
 
     it 'does not let a logged in user view the signup page' do
-      SpecHelper.sign_up_user  
+      UserHelper.sign_up_user  
       post '/signup', params
       get '/signup'
       expect(last_response.location).to include('/index')
@@ -75,7 +75,7 @@ describe ApplicationController do
     end
 
     it 'loads the index page after login' do
-      SpecHelper.create_and_login_user
+      UserHelper.create_and_login_user
       expect(last_response.status).to eq(302)
       follow_redirect!
       expect(last_response.status).to eq(200)
@@ -83,7 +83,7 @@ describe ApplicationController do
     end
 
     it 'does not let user view login page if already logged in' do
-      SpecHelper.create_and_login_user
+      UserHelper.create_and_login_user
       get '/login'
       expect(last_response.location).to include("/tweets")
     end
