@@ -1,6 +1,6 @@
 require 'date'
 require 'erb'
-require 'FileUtils'
+require 'fileutils'
 
 class SiteGenerator
 
