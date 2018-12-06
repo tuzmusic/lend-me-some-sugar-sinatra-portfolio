@@ -3,11 +3,33 @@ require 'pry'
 
 describe ApplicationController do
 
+  describe 'Layout' do
+    it "includes a header" do
+      get '/index'
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include("Lend Me Some Sugar")
+      expect(last_response.body).to include("Users")
+      expect(last_response.body).to include("Browse Ingredients")
+      expect(last_response.body).to include("Search Ingredients")
+    end
+  end
+
   describe "Homepage" do
     it 'loads the homepage' do
       get '/'
       expect(last_response.status).to eq(200)
-      expect(last_response.body).to include("Welcome to Fwitter")
+      expect(last_response.body).to include("Welcome!")
+    end
+    
+    it "includes links to sign up or log in" do
+      get '/'
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include("Sign Up")
+      expect(last_response.body).to include("Log In")
+    end
+
+    it "directs you to the index if already logged in" do
+      
     end
   end
 
@@ -18,55 +40,31 @@ describe ApplicationController do
       expect(last_response.status).to eq(200)
     end
 
-    it 'signup directs user to twitter index' do
-      params = {
-        :username => "skittles123",
-        :email => "skittles@aol.com",
-        :password => "rainbows"
-      }
-      post '/signup', params
-      expect(last_response.location).to include("/tweets")
+    it "directs user to the index page once they've signed up"  do
+      SpecHelper.sign_up_user  
+      expect(last_response.location).to include("/index")
     end
 
     it 'does not let a user sign up without a username' do
-      params = {
-        :username => "",
-        :email => "skittles@aol.com",
-        :password => "rainbows"
-      }
-      post '/signup', params
+      SpecHelper.sign_up_user  
       expect(last_response.location).to include('/signup')
     end
 
     it 'does not let a user sign up without an email' do
-      params = {
-        :username => "skittles123",
-        :email => "",
-        :password => "rainbows"
-      }
-      post '/signup', params
+      SpecHelper.sign_up_user  
       expect(last_response.location).to include('/signup')
     end
 
     it 'does not let a user sign up without a password' do
-      params = {
-        :username => "skittles123",
-        :email => "skittles@aol.com",
-        :password => ""
-      }
-      post '/signup', params
+      SpecHelper.sign_up_user  
       expect(last_response.location).to include('/signup')
     end
 
-    it 'creates a new user and logs them in on valid submission and does not let a logged in user view the signup page' do
-      params = {
-        :username => "skittles123",
-        :email => "skittles@aol.com",
-        :password => "rainbows"
-      }
+    it 'does not let a logged in user view the signup page' do
+      SpecHelper.sign_up_user  
       post '/signup', params
       get '/signup'
-      expect(last_response.location).to include('/tweets')
+      expect(last_response.location).to include('/index')
     end
   end
 
@@ -76,13 +74,8 @@ describe ApplicationController do
       expect(last_response.status).to eq(200)
     end
 
-    it 'loads the tweets index after login' do
-      user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-      params = {
-        :username => "becky567",
-        :password => "kittens"
-      }
-      post '/login', params
+    it 'loads the index page after login' do
+      SpecHelper.create_and_login_user
       expect(last_response.status).to eq(302)
       follow_redirect!
       expect(last_response.status).to eq(200)
@@ -90,15 +83,9 @@ describe ApplicationController do
     end
 
     it 'does not let user view login page if already logged in' do
-      user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-      params = {
-        :username => "becky567",
-        :password => "kittens"
-      }
-      post '/login', params
+      SpecHelper.create_and_login_user
       get '/login'
       expect(last_response.location).to include("/tweets")
-      
     end
 
     it "displays a failure message if no user is found" do
