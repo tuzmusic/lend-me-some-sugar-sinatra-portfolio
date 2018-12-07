@@ -1,18 +1,7 @@
 require 'spec_helper'
 require 'pry'
 
-describe ApplicationController do
-
-  describe "Layout" do
-    it "includes a header" do
-      get '/index'
-      expect(last_response.status).to eq(200)
-      expect(last_response.body).to include("Lend Me Some Sugar")
-      expect(last_response.body).to include("Users")
-      expect(last_response.body).to include("Browse Ingredients")
-      expect(last_response.body).to include("Search Ingredients")
-    end
-  end
+describe 'Users & Main Controller' do
 
   describe "Homepage/Login Page" do
     it "loads the homepage" do
@@ -21,17 +10,6 @@ describe ApplicationController do
       expect(last_response.body).to include("Welcome!")
     end
     
-    it "includes a link to sign up" do
-      get '/'
-      expect(last_response.status).to eq(200)
-      expect(last_response.body).to include("Sign Up")
-    end
-    
-    it "lets you log in directly from the homepage" do
-      get '/'
-      expect(page).to have_field(:name)
-      expect(page).to have_field(:password)
-    end
 
     it "loads the index page after login" do
       UserHelper.create_and_login_user
@@ -130,6 +108,8 @@ describe ApplicationController do
       ingredient2 = Ingredient.create(:name => "cumin", :user_id => user.id)
       get "/users/#{user.slug}"
       expect(page.current_path).to eq('/index')  # this is the right way to test, right?
+      expect(page.body).to include("parsley")
+      expect(page.body).to include("cumin")
     end
   end
 
@@ -151,7 +131,7 @@ describe ApplicationController do
     end
   end
 
-  describe "new action" do
+  describe "new ingredient action" do
     context 'logged in' do
       it "lets user view new ingredient form if logged in" do
         UserHelper.create_and_login_user
@@ -191,7 +171,7 @@ describe ApplicationController do
     end
   end
 
-  describe "show action" do
+  describe "show ingredient action" do
     context 'logged in' do
       it "displays an ingredient and shows all users who have listed that ingredient (by text search, not by 'ingredient has_many :users')" do
         expect(false).to eq(true)
@@ -208,7 +188,7 @@ describe ApplicationController do
     end
   end
 
-  describe "edit action" do
+  describe "edit ingredient action" do
     context "logged in" do
       it "lets a user view tweet edit form if they are logged in" do
         user = User.create(:name => "becky567", :email => "starz@aol.com", :password => "kittens")
@@ -257,7 +237,7 @@ describe ApplicationController do
         expect(page.status_code).to eq(200)
       end
 
-      it "does not let a user edit a text with blank:name do
+      it "does not let a user edit a text with blank username" do
         user = User.create(:name => "becky567", :email => "starz@aol.com", :password => "kittens")
         tweet = Ingredient.create(:name => "tweeting!", :user_id => 1)
         visit '/login'
@@ -283,7 +263,7 @@ describe ApplicationController do
     end
   end
 
-  describe "delete action" do
+  describe "delete ingredient action" do
     context "logged in" do
       it "lets a user delete their own tweet if they are logged in" do
         user = User.create(:name => "becky567", :email => "starz@aol.com", :password => "kittens")
