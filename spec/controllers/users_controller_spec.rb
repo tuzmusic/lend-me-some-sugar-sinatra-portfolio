@@ -54,24 +54,28 @@ describe 'Users & Main Controller' do
     end
 
     it "directs user to the index page once they've signed up"  do
-      UserHelper.sign_up_user  
+      params = { username: "skittles123", email: "skittles@aol.com", password: "rainbows" }
+      post '/signup', params  
       expect(last_response.location).to include("/index")
     end
 
     it "does not let a user sign up without a username" do
-      UserHelper.sign_up_user  
+      params = { username: "skittles123", email: "skittles@aol.com", password: "rainbows" }
+      post '/signup', params  
       expect(last_response.location).to include('/signup')
       expect(last_response.body).to include('You must enter a username.')
     end
 
     it "does not let a user sign up without an email" do
-      UserHelper.sign_up_user  
+      params = { username: "skittles123", email: "", password: "rainbows" }
+      post '/signup', params  
       expect(last_response.location).to include('/signup')
       expect(last_response.body).to include('You must enter an email address.')
     end
 
     it "does not let a user sign up without a password" do
-      UserHelper.sign_up_user  
+      params = { username: "skittles123", email: "skittles@aol.com", password: "" }
+      post '/signup', params  
       expect(last_response.location).to include('/signup')
       expect(last_response.body).to include('You must enter a password.')
     end

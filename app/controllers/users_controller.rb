@@ -31,16 +31,17 @@ class UserController < ApplicationController
   end
   
   # New Action
-  get '/users/new' do
-    @ingredients = Ingredient.all
-    erb :'/users/new'
+  get '/signup' do
+     if session[:id]
+      redirect '/index'
+    else
+      erb :signup
+    end
   end
   
   # Create Action
   post '/users' do
     user = User.create(params['user'])
-
-    user.ingredients << Ingredient.create(name: params['ingredient_name']) unless params['ingredient_name'].empty?
     user.save
     redirect "users/#{user.id}"
   end
