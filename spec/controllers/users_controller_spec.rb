@@ -108,12 +108,9 @@ describe 'Users & Main Controller' do
 
   describe "logout" do
     it "lets a user logout, and directs them to the index page, if they are already logged in" do
-      UserHelper.create_and_login_user
-      get '/logout'
-      expect(last_response.location).to include("/index")
-    end
-
-    it "does not let a user logout if not logged in" do
+      User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+      params = { username: "becky567", password: "kittens" }
+      post '/login', params   
       get '/logout'
       expect(last_response.location).to include("/")
     end

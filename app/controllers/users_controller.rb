@@ -34,7 +34,11 @@ class UserController < ApplicationController
 
   # Index Action
   get '/index' do
-    erb :index
+    if session[:id]
+      erb :index
+    else
+      redirect '/'
+    end
   end
   
   # New User Action
