@@ -1,7 +1,7 @@
 class UserHelper
   def self.sign_up_user
       params = {
-        :name => "skittles123",
+        :username => "skittles123",
         :email => "skittles@aol.com",
         :password => "rainbows"
       }
@@ -9,13 +9,13 @@ class UserHelper
   end
   
   def self.create_user
-    User.create(:name => "becky567", :email => "starz@aol.com", :password => "kittens")
+    User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
   end
 
   def self.create_user_and_click_login
     user = self.create_user
     visit '/'
-    fill_in(:name, :with => "becky567")
+    fill_in(:username, :with => "becky567")
     fill_in(:password, :with => "kittens")
     click_button 'Log In'
     user
@@ -24,7 +24,7 @@ class UserHelper
   def self.create_and_login_user
       user = self.create_user
       params = {
-        :name => "becky567",
+        :username => "becky567",
         :password => "kittens"
       }
       post '/login', params   

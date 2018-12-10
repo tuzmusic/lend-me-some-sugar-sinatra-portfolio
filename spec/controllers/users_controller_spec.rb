@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'pry'
+require_relative './spec_helpers'
 
 describe 'Users & Main Controller' do
 
@@ -8,6 +9,11 @@ describe 'Users & Main Controller' do
       get '/'
       expect(last_response.status).to eq(200)
       expect(last_response.body).to include("Welcome!")
+    end
+
+    it "can log in an existing user" do
+      user = UserHelper.create_and_login_user
+      expect(session[:id]).to eq(user.id)
     end
 
     it "loads the index page after login" do
@@ -25,7 +31,7 @@ describe 'Users & Main Controller' do
     end
 
     it "displays a failure message if no user is found" do
-      params = { :name => "becky567", :password => "kittens" }
+      params = { :username => "becky567", :password => "kittens" }
       post '/login', params
       expect(last_response.status).to eq(302)
       follow_redirect!
@@ -35,7 +41,7 @@ describe 'Users & Main Controller' do
 
     it "displays a failure message if the password is incorrect" do
       UserHelper.create_user
-      params = { :name => "becky567", :password => "kittensssss" }
+      params = { :username => "becky567", :password => "kittensssss" }
       post '/login', params
       expect(last_response.status).to eq(302)
       follow_redirect!
