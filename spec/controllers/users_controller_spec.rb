@@ -14,16 +14,21 @@ describe 'Users & Main Controller' do
     it "loads the index page after login" do
       User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
       params = { username: "becky567", password: "kittens" }
-      post '/login', params   
-      expect(last_response.location).to include('/index')
+      post '/login', params 
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include('Lend Me Some Sugar')
     end
 
     it "redirects you to the index if already logged in" do
       User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
       params = { username: "becky567", password: "kittens" }
       post '/login', params   
-      get '/'
-      expect(last_response.location).to include('/index')      
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include('Lend Me Some Sugar')
     end
 
     it "displays a failure message if no user is found" do
@@ -69,40 +74,52 @@ describe 'Users & Main Controller' do
     it "loads the signup page" do
       get '/signup'
       expect(last_response.status).to eq(200)
+      expect(last_response.body).to include('Sign Up')
     end
 
     it "directs user to the index page once they've signed up"  do
       params = {  'user[username]': "skittles123", 'user[email]': "skittles@aol.com", 'user[password]': "rainbows" }
       post '/users', params  
-      expect(last_response.location).to include("/index")
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include('Lend Me Some Sugar')
     end
 
     it "does not let a user sign up without a username" do
       params = { 'user[username]': "", 'user[email]': "skittles@aol.com", 'user[password]': "rainbows" }
       post '/users', params  
-      follow_redirect!      
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
       expect(last_response.body).to include('You must enter a username, email and password.')
     end
 
     it "does not let a user sign up without an email" do
       params = { 'user[username]': "skittles123", 'user[email]': "", 'user[password]': "rainbows" }
       post '/users', params  
-      follow_redirect!      
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
       expect(last_response.body).to include('You must enter a username, email and password.')
     end
 
     it "does not let a user sign up without a password" do
       params = { 'user[username]': "skittles123", 'user[email]': "skittles@aol.com", 'user[password]': "" }
       post '/users', params  
-      follow_redirect!      
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
       expect(last_response.body).to include('You must enter a username, email and password.')
     end
 
     it "redirects a logged in user to the index page" do
       params = {  'user[username]': "skittles123", 'user[email]': "skittles@aol.com", 'user[password]': "rainbows" }
       post '/users', params  
-      get '/signup'
-      expect(last_response.location).to include('/index')
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include('Lend Me Some Sugar')
     end
   end
 
@@ -112,12 +129,10 @@ describe 'Users & Main Controller' do
       params = { username: "becky567", password: "kittens" }
       post '/login', params   
       get '/logout'
-      expect(last_response.location).to include("/")
-    end
-
-    it "does not load /index if user not logged in" do
-      get '/index'
-      expect(last_response.location).to include("/")
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include('Welcome')
     end
   end
 
@@ -158,7 +173,10 @@ describe 'Users & Main Controller' do
     context 'logged out' do
       it "does not let a user view the index if not logged in" do
         get '/index'
-        expect(last_response.location).to include("/")
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)        
+        expect(last_response.body).to include("Welcome")
       end
     end
     
@@ -171,6 +189,8 @@ describe 'Users & Main Controller' do
       
       it "lets a user view the index page if logged in" do
         get "/index"
+        expect(last_response.status).to eq(200)
+        expect(last_response.location).to eq("/index")
         expect(last_response.body).to include("Lend Me Some Sugar!")
       end
       
