@@ -147,7 +147,6 @@ describe 'Users & Main Controller' do
         user = User.last
         ingredient1 = Ingredient.create(name: "parsley", user_id: user.id)
         ingredient2 = Ingredient.create(name: "cumin", user_id: user.id)
-        # user.save
         get "/users/becky567"
         expect(last_response.body).to include("parsley")
         expect(last_response.body).to include("cumin")
@@ -156,49 +155,42 @@ describe 'Users & Main Controller' do
   end
 
   describe "index action" do
+    context 'logged out' do
+      it "does not let a user view the index if not logged in" do
+        get '/index'
+        expect(last_response.location).to include("/")
+      end
+    end
+    
     context 'logged in' do
       before do
         User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
         params = { username: "becky567", password: "kittens" }
         post '/login', params           
       end
-
-      it "test login in before block, visit show page" do
-        visit "/users/becky567"
-        expect(page.body).to include("becky567")        
-      end
       
       it "lets a user view the index page if logged in" do
-        visit "/index"
-        visit "/users/becky567"
-        expect(page.body).to include("Lend Me Some Sugar!")
+        get "/index"
+        expect(last_response.body).to include("Lend Me Some Sugar!")
       end
       
       it "lists all the users" do
         User.create(username: "becky568", email: "starz@aol.com", password: "kittens")
         User.create(username: "becky569", email: "starz@aol.com", password: "kittens")
         
-        visit "/index"
-        # binding.pry
-        expect(page.location).to include("/index")
-        expect(page.body).to include("becky567")
-        expect(page.body).to include("becky568")
-        expect(page.body).to include("becky569")
+        get "/index"
+        # expect(last_response.location).to include("/index")
+        expect(last_response.body).to include("becky567")
+        expect(last_response.body).to include("becky568")
+        expect(last_response.body).to include("becky569")
       end
 
       it "links to each user's show page" do
         User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
         params = { username: "becky567", password: "kittens" }
         post '/login', params   
-        visit "/index"
+        expect(true).to eq(false)
 
-      end
-    end
-
-    context 'logged out' do
-      it "does not let a user view the index if not logged in" do
-        get '/index'
-        expect(last_response.location).to include("/")
       end
     end
   end
