@@ -1,0 +1,5 @@
+<% if session[:flash] %>
+  <%= session[:flash] %>
+  <% session.delete(:flash) %>
+<% end %>
+<%= yield %>

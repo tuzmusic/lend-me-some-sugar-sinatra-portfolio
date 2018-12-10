@@ -12,8 +12,13 @@ describe 'Users & Main Controller' do
     end
 
     it "can log in an existing user" do
-      user = UserHelper.create_and_login_user
-      expect(session[:id]).to eq(user.id)
+      User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+      params = {
+        username: "becky567",
+        password: "kittens"
+      }
+      post '/login', params   
+      expect(last_response.location).to include('/index')
     end
 
     it "loads the index page after login" do
@@ -31,7 +36,7 @@ describe 'Users & Main Controller' do
     end
 
     it "displays a failure message if no user is found" do
-      params = { :username => "becky567", :password => "kittens" }
+      params = { username: "becky567", password: "kittens" }
       post '/login', params
       expect(last_response.status).to eq(302)
       follow_redirect!
@@ -41,7 +46,7 @@ describe 'Users & Main Controller' do
 
     it "displays a failure message if the password is incorrect" do
       UserHelper.create_user
-      params = { :username => "becky567", :password => "kittensssss" }
+      params = { username: "becky567", password: "kittensssss" }
       post '/login', params
       expect(last_response.status).to eq(302)
       follow_redirect!
@@ -109,8 +114,8 @@ describe 'Users & Main Controller' do
   describe "user show page" do
     it "shows all a single user's ingredients" do
       user = UserHelper.create_user
-      ingredient1 = Ingredient.create(:name => "parsley", :user_id => user.id)
-      ingredient2 = Ingredient.create(:name => "cumin", :user_id => user.id)
+      ingredient1 = Ingredient.create(name: "parsley", user_id: user.id)
+      ingredient2 = Ingredient.create(name: "cumin", user_id: user.id)
       get "/users/#{user.slug}"
       expect(page.current_path).to eq('/index')  # this is the right way to test, right?
       expect(page.body).to include("parsley")

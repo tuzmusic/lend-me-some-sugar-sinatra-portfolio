@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 class UserHelper
   def self.sign_up_user
       params = {

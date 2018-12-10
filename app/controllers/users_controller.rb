@@ -1,14 +1,31 @@
 class UserController < ApplicationController
 
-  # Welcome action
+  # Welcome Action
   get '/' do
     erb :welcome
   end
 
+  # Login Action
+  post '/login' do
+    # binding.pry
+    if params[:username].empty? || params[:password].empty? 
+      session[:flash] = "You must enter a username and password."
+      redirect '/login' 
+    end
+    
+    user = User.find_by(username: params[:username])    
+    if user && user.authenticate(params[:password])
+      session[:id] = user.id
+      redirect '/index'
+    else
+      session[:flash] = "Login failed: " + (user ? "Incorrect password." : "User '#{params[:username]}' not found.")
+      redirect '/'
+    end
+  end
+
   # Index Action
-  get '/users' do
-    @users = User.all
-    erb :'/users/index'
+  get '/index' do
+    erb :index
   end
   
   # New Action
