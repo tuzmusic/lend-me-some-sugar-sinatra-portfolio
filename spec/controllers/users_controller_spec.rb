@@ -122,14 +122,21 @@ describe 'Users & Main Controller' do
   end
 
   describe "user show page" do
+
+    it "navigates to the show page" do
+      user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+      get "/users/#{user.slug}"
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include("becky567")
+    end
+
     it "shows all a single user's ingredients" do
-      user = UserHelper.create_user
+      user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
       ingredient1 = Ingredient.create(name: "parsley", user_id: user.id)
       ingredient2 = Ingredient.create(name: "cumin", user_id: user.id)
       get "/users/#{user.slug}"
-      expect(page.current_path).to eq('/index')  # this is the right way to test, right?
-      expect(page.body).to include("parsley")
-      expect(page.body).to include("cumin")
+      expect(last_response.body).to include("parsley")
+      expect(last_response.body).to include("cumin")
     end
   end
 
