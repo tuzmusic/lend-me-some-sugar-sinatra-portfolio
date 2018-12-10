@@ -25,12 +25,18 @@ class UserController < ApplicationController
     end
   end
 
+  # Logout Action
+  get '/logout' do
+    session.delete(:id)
+    redirect '/'
+  end
+
   # Index Action
   get '/index' do
     erb :index
   end
   
-  # New Action
+  # New User Action
   get '/signup' do
      if session[:id]
       redirect '/index'
@@ -39,11 +45,11 @@ class UserController < ApplicationController
     end
   end
   
-  # Create Action
+  # Create User Action
   post '/users' do
     user = User.create(params['user'])
     user.save
-    redirect "users/#{user.id}"
+    redirect "/index"
   end
   
   # Show Action
