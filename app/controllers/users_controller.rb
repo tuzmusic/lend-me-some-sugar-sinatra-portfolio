@@ -32,16 +32,6 @@ class UserController < ApplicationController
     redirect '/'
   end
 
-  # Index Action
-  get '/index' do
-    if session[:id]
-      @users = User.all
-      erb :index
-    else
-      redirect '/'
-    end
-  end
-  
   # New User Action
   get '/signup' do
     if session[:id]
@@ -64,10 +54,24 @@ class UserController < ApplicationController
     end
   end
   
+  # Index Action
+  get '/index' do
+    if session[:id]
+      @users = User.all
+      erb :index
+    else
+      redirect '/'
+    end
+  end
+  
   # Show User Action
   get '/users/:slug' do
-    @user = User.find_by_slug(params[:slug])
-    erb :'/users/show'
+    if session[:id]
+      @user = User.find_by_slug(params[:slug])
+      erb :'/users/show'
+    else
+      redirect '/'
+    end
   end
   
   # Edit Action

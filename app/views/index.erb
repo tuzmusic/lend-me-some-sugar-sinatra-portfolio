@@ -4,7 +4,8 @@
 <h2>Users</h2>
 <ol>
   <% @users.each do |user| %>
+  <li>
     <a href="/users/<%= user.slug %>"><%= user.username %></a>
+  </li>
   <% end %>
-  <li></li>
 </ol>

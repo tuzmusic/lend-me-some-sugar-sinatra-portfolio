@@ -122,7 +122,14 @@ describe 'Users & Main Controller' do
   end
 
   describe "user show page" do
-
+    it "does not show the show page if not logged in" do
+      user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+      get "/users/#{user.slug}"
+      expect(last_response.status).to eq(302)
+      follow_redirect!      
+      expect(last_response.body).to include('Welcome!')
+    end
+    
     it "navigates to the show page" do
       user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
       get "/users/#{user.slug}"
@@ -145,21 +152,30 @@ describe 'Users & Main Controller' do
       before do
         User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
         params = { username: "becky567", password: "kittens" }
-        post '/login', params   
-        visit "/index"
+        post '/login', params           
       end
 
+      it "test login in before block, visit show page" do
+        visit "/users/becky567"
+        expect(page.body).to include("becky567")        
+      end
+      
       it "lets a user view the index page if logged in" do
-        expect(last_response.location).to include("/index")
+        visit "/index"
+        visit "/users/becky567"
+        expect(page.body).to include("Lend Me Some Sugar!")
       end
-
+      
       it "lists all the users" do
         User.create(username: "becky568", email: "starz@aol.com", password: "kittens")
         User.create(username: "becky569", email: "starz@aol.com", password: "kittens")
-        expect(last_response.location).to include("/index")
-        expect(last_response.body).to include("becky567")
-        expect(last_response.body).to include("becky568")
-        expect(last_response.body).to include("becky569")
+        
+        visit "/index"
+        # binding.pry
+        expect(page.location).to include("/index")
+        expect(page.body).to include("becky567")
+        expect(page.body).to include("becky568")
+        expect(page.body).to include("becky569")
       end
 
       it "links to each user's show page" do
