@@ -44,6 +44,24 @@ describe 'Users & Main Controller' do
       expect(last_response.status).to eq(200)
       expect(last_response.body).to include("Login failed: Incorrect password.")
     end
+    
+    it "displays a failure message if no username is entered" do
+      params = { username: "", password: "1345ty" }
+      post '/login', params     
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include("You must enter a username and password.")
+    end
+    
+    it "displays a failure message if no password is entered" do
+      params = { username: "becky567", password: "" }
+      post '/login', params     
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include("You must enter a username and password.")
+    end
   end
 
   describe "Signup Page" do
@@ -54,35 +72,35 @@ describe 'Users & Main Controller' do
     end
 
     it "directs user to the index page once they've signed up"  do
-      params = { username: "skittles123", email: "skittles@aol.com", password: "rainbows" }
-      post '/signup', params  
+      params = {  'user[username]': "skittles123", 'user[email]': "skittles@aol.com", 'user[password]': "rainbows" }
+      post '/users', params  
       expect(last_response.location).to include("/index")
     end
 
     it "does not let a user sign up without a username" do
-      params = { username: "skittles123", email: "skittles@aol.com", password: "rainbows" }
-      post '/signup', params  
-      expect(last_response.location).to include('/signup')
-      expect(last_response.body).to include('You must enter a username.')
+      params = { 'user[username]': "", 'user[email]': "skittles@aol.com", 'user[password]': "rainbows" }
+      post '/users', params  
+      follow_redirect!      
+      expect(last_response.body).to include('You must enter a username, email and password.')
     end
 
     it "does not let a user sign up without an email" do
-      params = { username: "skittles123", email: "", password: "rainbows" }
-      post '/signup', params  
-      expect(last_response.location).to include('/signup')
-      expect(last_response.body).to include('You must enter an email address.')
+      params = { 'user[username]': "skittles123", 'user[email]': "", 'user[password]': "rainbows" }
+      post '/users', params  
+      follow_redirect!      
+      expect(last_response.body).to include('You must enter a username, email and password.')
     end
 
     it "does not let a user sign up without a password" do
-      params = { username: "skittles123", email: "skittles@aol.com", password: "" }
-      post '/signup', params  
-      expect(last_response.location).to include('/signup')
-      expect(last_response.body).to include('You must enter a password.')
+      params = { 'user[username]': "skittles123", 'user[email]': "skittles@aol.com", 'user[password]': "" }
+      post '/users', params  
+      follow_redirect!      
+      expect(last_response.body).to include('You must enter a username, email and password.')
     end
 
     it "redirects a logged in user to the index page" do
-      UserHelper.sign_up_user  
-      post '/signup', params
+      params = {  'user[username]': "skittles123", 'user[email]': "skittles@aol.com", 'user[password]': "rainbows" }
+      post '/users', params  
       get '/signup'
       expect(last_response.location).to include('/index')
     end

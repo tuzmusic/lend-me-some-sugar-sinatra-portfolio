@@ -2,7 +2,7 @@ class UserController < ApplicationController
 
   # Welcome Action
   get '/' do
-     if session[:id]
+    if session[:id]
       redirect '/index'
     else
       erb :welcome
@@ -13,15 +13,16 @@ class UserController < ApplicationController
   post '/login' do
     if params[:username].empty? || params[:password].empty? 
       session[:flash] = "You must enter a username and password."
-      redirect '/login' 
-    end
-    user = User.find_by(username: params[:username])    
-    if user && user.authenticate(params[:password])
-      session[:id] = user.id
-      redirect '/index'
-    else
-      session[:flash] = "Login failed: " + (user ? "Incorrect password." : "User '#{params[:username]}' not found.")
-      redirect '/'
+      redirect '/' 
+    else 
+      user = User.find_by(username: params[:username])    
+      if user && user.authenticate(params[:password])
+        session[:id] = user.id
+        redirect '/index'
+      else
+        session[:flash] = "Login failed: " + (user ? "Incorrect password." : "User '#{params[:username]}' not found.")
+        redirect '/'
+      end
     end
   end
 
@@ -38,7 +39,7 @@ class UserController < ApplicationController
   
   # New User Action
   get '/signup' do
-     if session[:id]
+    if session[:id]
       redirect '/index'
     else
       erb :signup
@@ -47,9 +48,15 @@ class UserController < ApplicationController
   
   # Create User Action
   post '/users' do
-    user = User.create(params['user'])
-    user.save
-    redirect "/index"
+    if params[:user][:username].empty? || params[:user][:password].empty? || params[:user][:email].empty?
+      session[:flash] = "You must enter a username, email and password."
+      redirect '/signup' 
+    else 
+      user = User.create(params['user'])
+      user.save
+      session[:id] = user.id
+      redirect "/index"
+    end
   end
   
   # Show Action
