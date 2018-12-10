@@ -4,7 +4,7 @@ require 'pry'
 describe 'Users & Main Controller' do
 
   describe "Homepage/Login Page" do
-    it "loads the homepage" do
+    it "loads the homepage at '/'" do
       get '/'
       expect(last_response.status).to eq(200)
       expect(last_response.body).to include("Welcome!")

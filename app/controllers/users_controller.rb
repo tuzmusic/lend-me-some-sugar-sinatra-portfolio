@@ -1,5 +1,10 @@
 class UserController < ApplicationController
 
+  # Welcome action
+  get '/' do
+    erb :welcome
+  end
+
   # Index Action
   get '/users' do
     @users = User.all

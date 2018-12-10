@@ -1,3 +1,6 @@
+Friends - Many-to-many users. (how to name?)
+
+
 Version 1.2
 _ Add "amount" property to Ingredient
   amounts = [ {index: 0, description: 'a few teaspoons'},
