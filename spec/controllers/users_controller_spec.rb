@@ -142,21 +142,32 @@ describe 'Users & Main Controller' do
 
   describe "index action" do
     context 'logged in' do
-      it "lets a user view the index page if logged in" do
+      before do
         User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
-        User.create(username: "becky568", email: "starz@aol.com", password: "kittens")
-        User.create(username: "becky569", email: "starz@aol.com", password: "kittens")
         params = { username: "becky567", password: "kittens" }
         post '/login', params   
         visit "/index"
-        expect(last_response.status).to eq(200)
+      end
+
+      it "lets a user view the index page if logged in" do
+        expect(last_response.location).to include("/index")
+      end
+
+      it "lists all the users" do
+        User.create(username: "becky568", email: "starz@aol.com", password: "kittens")
+        User.create(username: "becky569", email: "starz@aol.com", password: "kittens")
+        expect(last_response.location).to include("/index")
         expect(last_response.body).to include("becky567")
         expect(last_response.body).to include("becky568")
         expect(last_response.body).to include("becky569")
       end
 
-      it "lists all the users" do
-        
+      it "links to each user's show page" do
+        User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+        params = { username: "becky567", password: "kittens" }
+        post '/login', params   
+        visit "/index"
+
       end
     end
 

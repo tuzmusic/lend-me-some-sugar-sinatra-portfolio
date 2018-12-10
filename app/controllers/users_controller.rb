@@ -35,6 +35,7 @@ class UserController < ApplicationController
   # Index Action
   get '/index' do
     if session[:id]
+      @users = User.all
       erb :index
     else
       redirect '/'
