@@ -2,17 +2,19 @@ class UserController < ApplicationController
 
   # Welcome Action
   get '/' do
-    erb :welcome
+     if session[:id]
+      redirect '/index'
+    else
+      erb :welcome
+    end
   end
 
   # Login Action
   post '/login' do
-    # binding.pry
     if params[:username].empty? || params[:password].empty? 
       session[:flash] = "You must enter a username and password."
       redirect '/login' 
     end
-    
     user = User.find_by(username: params[:username])    
     if user && user.authenticate(params[:password])
       session[:id] = user.id

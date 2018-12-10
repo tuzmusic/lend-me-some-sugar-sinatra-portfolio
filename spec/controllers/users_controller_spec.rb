@@ -11,26 +11,17 @@ describe 'Users & Main Controller' do
       expect(last_response.body).to include("Welcome!")
     end
 
-    it "can log in an existing user" do
+    it "loads the index page after login" do
       User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
-      params = {
-        username: "becky567",
-        password: "kittens"
-      }
+      params = { username: "becky567", password: "kittens" }
       post '/login', params   
       expect(last_response.location).to include('/index')
     end
 
-    it "loads the index page after login" do
-      UserHelper.create_and_login_user
-      expect(last_response.status).to eq(302)
-      follow_redirect!
-      expect(last_response.status).to eq(200)
-      expect(last_response.location).to include('/index')
-    end
-
     it "redirects you to the index if already logged in" do
-      UserHelper.create_and_login_user
+      User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+      params = { username: "becky567", password: "kittens" }
+      post '/login', params   
       get '/'
       expect(last_response.location).to include('/index')      
     end
