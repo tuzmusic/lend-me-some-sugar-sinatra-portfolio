@@ -129,21 +129,29 @@ describe 'Users & Main Controller' do
       follow_redirect!      
       expect(last_response.body).to include('Welcome!')
     end
-    
-    it "navigates to the show page" do
-      user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
-      get "/users/#{user.slug}"
-      expect(last_response.status).to eq(200)
-      expect(last_response.body).to include("becky567")
-    end
+  
+    context "logged in" do
+      before do
+        User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+        params = { username: "becky567", password: "kittens" }
+        post '/login', params           
+      end
+      
+      it "navigates to the show page if logged in" do
+        get "/users/becky567"
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include("becky567")
+      end
 
-    it "shows all a single user's ingredients" do
-      user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
-      ingredient1 = Ingredient.create(name: "parsley", user_id: user.id)
-      ingredient2 = Ingredient.create(name: "cumin", user_id: user.id)
-      get "/users/#{user.slug}"
-      expect(last_response.body).to include("parsley")
-      expect(last_response.body).to include("cumin")
+      it "shows all a single user's ingredients" do
+        user = User.last
+        ingredient1 = Ingredient.create(name: "parsley", user_id: user.id)
+        ingredient2 = Ingredient.create(name: "cumin", user_id: user.id)
+        # user.save
+        get "/users/becky567"
+        expect(last_response.body).to include("parsley")
+        expect(last_response.body).to include("cumin")
+      end
     end
   end
 
