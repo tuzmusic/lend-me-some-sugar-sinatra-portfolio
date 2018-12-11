@@ -45,12 +45,34 @@ describe 'Ingredients Controller' do
         expect{post '/ingredients', params}.to change{User.last.ingredients.count}.by(10)
       end
 
-      it "lets user create less than 10 ingredients" do      
-        expect(false).to eq(true) 
+      it "doesn't assign the ingredients to a different user" do
+        ingredients = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th']
+        params = {ingredients:[]}
+        ingredients.each { |i| params[:ingredients] << { name: i } }
+        User.create(username: "another_user", email: "starz@aol.com", password: "kittens")
+        
+        expect{post '/ingredients', params}.to change{User.last.ingredients.count}.by(0)
       end
 
-      it "does not let a user save zero ingredients" do 
-        expect(false).to eq(true) 
+      it "lets user create less than 10 ingredients" do      
+        ingredients = ['1st','2nd','3rd','4th','','','','','','']
+        params = {ingredients:[]}
+        ingredients.each { |i| params[:ingredients] << { name: i } }
+      
+        expect{post '/ingredients', params}.to change{Ingredient.all.count}.by(4)
+      end
+      
+      it "redirects to the user's show page" do
+        ingredients = ['1st','2nd','3rd','4th','','','','','','']
+        params = {ingredients:[]}
+        ingredients.each { |i| params[:ingredients] << { name: i } }
+      
+        post '/ingredients', params
+        
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include("becky567's ingredients")
       end
     end
   end

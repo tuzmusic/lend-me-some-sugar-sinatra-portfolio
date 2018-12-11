@@ -18,13 +18,16 @@ class IngredientController < ApplicationController
   
   # Create Action
   post '/ingredients' do
+    user = User.find(session[:id])
+
     params[:ingredients].each do |ingredient|
+      next if ingredient[:name].empty?
       ingredient = Ingredient.create(ingredient)
-      ingredient.user = User.find(session[:id])
+      ingredient.user = user
       ingredient.save
     end
 
-    redirect "ingredients/#{ingredient.id}"
+    redirect "/users/#{user.slug}"
   end
   
   # Show Action
