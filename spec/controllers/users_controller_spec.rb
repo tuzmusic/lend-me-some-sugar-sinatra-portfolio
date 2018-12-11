@@ -190,27 +190,22 @@ describe 'Users & Main Controller' do
       it "lets a user view the index page if logged in" do
         get "/index"
         expect(last_response.status).to eq(200)
-        expect(last_response.location).to eq("/index")
         expect(last_response.body).to include("Lend Me Some Sugar!")
       end
       
       it "lists all the users" do
         User.create(username: "becky568", email: "starz@aol.com", password: "kittens")
         User.create(username: "becky569", email: "starz@aol.com", password: "kittens")
-        
+
         get "/index"
-        # expect(last_response.location).to include("/index")
         expect(last_response.body).to include("becky567")
         expect(last_response.body).to include("becky568")
         expect(last_response.body).to include("becky569")
       end
 
       it "links to each user's show page" do
-        User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
-        params = { username: "becky567", password: "kittens" }
-        post '/login', params   
-        expect(true).to eq(false)
-
+        get '/index'
+        expect(last_response.body).to include("/users/becky567")
       end
     end
   end
