@@ -77,64 +77,90 @@ describe 'Ingredients Controller' do
     end
   end
   
-  describe "show ingredient action" do
-    it "lets the user access the ingredient show page if logged in" do
-      user = UserHelper.create_user
-      ingredient = UserHelper.create_parsley(user)
-      get "/ingredients/#{ingredient.id}"
-      expect(last_response.body).to include(ingredient.name)
+  describe "edit ingredients action" do
+    context "logged out" do
+      it "doesn't let a user view ingredient edit form if they are logged out" do
+        get '/ingredients/edit'
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include("Welcome")
+      end
     end
+    
+     context "logged in" do
+      before do
+        User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+        params = { username: "becky567", password: "kittens" }
+        post '/login', params           
 
-    it "does not let a user view an ingredient show page if logged out" do
-      user = UserHelper.create_user
-      ingredient = UserHelper.create_parsley(user)
-      get "/ingredients/#{ingredient.id}"
-      expect(last_response.location).to include("/")
-    end
-  end
+        Ingredient.create(name: 'parsley', user_id: user.id)
+        Ingredient.create(name: 'cumin', user_id: user.id)
+        Ingredient.create(name: 'basil', user_id: user.id)
+        
+        visit '/ingredients/edit'
+      end
 
-  describe "edit ingredient action" do
-    it "lets a user view ingredient edit form if they are logged in" do
-      user = UserHelper.create_and_login_user
-      ingredient = UserHelper.create_parsley(user)
-      visit '/ingredients/1/edit'
-      expect(page.status_code).to eq(200)
-      expect(page.body).to include("Edit Your Ingredients")
-    end
+      it "lets a user view ingredient edit form if they are logged in" do
+        expect(page.status_code).to eq(200)
+        expect(page.body).to include("Edit Your Ingredients")
+      end
 
-    it "lets a user edit their ingedients (if they are logged in)" do
-      user = UserHelper.create_user_and_click_login
-      ingredient = UserHelper.create_parsley(user)
-      visit '/ingredients/edit'
+      it "doesn't show another user's ingredients" do
+        user2 = User.create(username: "another", email: "starz@aol.com", password: "kittens")
+        Ingredient.create(name: 'celery', user_id: user2.id)
+        
+        visit '/ingredients/edit'
+        expect(page.body).not_to include('celery')
+      end
 
-      # fill_in(:name, with: "i love tweeting")
+      it "show's a user's ingredients" do
+        expect(page.status_code).to eq(200)
+        expect(page.all('input[type=text]').count).to eq(3)        
+        expect(page.body).to include('parsley')
+        expect(page.body).to include('cumin')
+        expect(page.body).to include('basil')
+      end
+  
+      it "lets a user edit their ingedients" do
+        fill_in('ingredients[0][name]', with: "paprika")  
+        click_button 'Save'
 
-      # click_button 'submit'
-      # expect(Ingredient.find_by(name: "i love tweeting")).to be_instance_of(Ingredient)
-      # expect(Ingredient.find_by(name: "tweeting!")).to eq(nil)
-      # expect(page.status_code).to eq(200)
-    end
-
-    it "does not let a user edit an ingredient with blank username" do
-      user = UserHelper.create_user_and_click_login
-      ingredient = UserHelper.create_parsley(user)
-      # visit '/ingredients/1/edit'
-
-      # fill_in(:name, with: "")
-
-      # click_button 'submit'
-      # expect(Ingredient.find_by(name: "i love tweeting")).to be(nil)
-      # expect(page.current_path).to eq("/ingredients/1/edit")
-    end
-
-    it "lets a user delete an ingredient" do
+        expect(Ingredient.find_by(name: "paprika")).to be_instance_of(Ingredient)
+        expect(Ingredient.find_by(name: "parsley")).to eq(nil)
+        expect(User.first.ingredients.first.name).to eq('paprika')
+        expect(User.first.ingredients.last.name).to eq('basil')
+        expect(page.status_code).to eq(200)
+      end
       
+      it "redirects to the user's show page" do
+        click_button 'Save'
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include("becky567's ingredients")
+      end
+
+      it "has checkboxes for deleting each ingredient" do
+        expect(page.all('input[type=checkbox]').count).to eq(3)        
+      end
+
+      it "lets a user delete ingredients using checkboxes" do
+        expect(false).to eq(true)
+      end
+
+      it "does not let a user blank out an existing ingredient" do
+        fill_in('ingredients[0][name]', with: "")  
+        click_button "Save"
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include("Edit Your Ingredients")
+        expect(last_response.body).to include("You cannot leave an existing ingredient blank. To delete ingredients, use the checkboxes.")
+      end
     end
 
-    it "does not load edit page if not logged in -- instead redirects to home page" do
-      get '/ingredients/1/edit'
-      expect(last_response.location).to include("/")
-    end
+
   end
 
   describe "delete ingredient action" do
@@ -174,4 +200,40 @@ describe 'Ingredients Controller' do
       end
     end
   end
+
+  describe "show ingredient action" do
+
+    context "logged out" do
+      it "does not let a user view an ingredient show page if logged out" do
+        user = UserHelper.create_user
+        ingredient = UserHelper.create_parsley(user)
+        get "/ingredients/#{ingredient.id}"
+
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)        
+        expect(last_response.body).to include("Welcome")
+      end
+    end
+
+    context "logged in" do
+      before do
+        user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+        post '/login', { username: "becky567", password: "kittens" }
+
+        parsley = Ingredient.create(name: 'parsley', user_id: user.id)
+      end
+      
+      it "lets the user access the ingredient show page if logged in" do
+        get "/ingredients/#{ingredient.id}"
+        expect(last_response.body).to include(ingredient.name)
+      end
+
+      it "lists all the users who have this ingredient" do
+        
+      end
+    end
+
+  end
+
 end
