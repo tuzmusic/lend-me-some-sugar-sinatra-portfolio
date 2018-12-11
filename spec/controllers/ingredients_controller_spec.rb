@@ -37,7 +37,16 @@ describe 'Ingredients Controller' do
         expect{post '/ingredients', params}.to change{Ingredient.all.count}.by(10)
       end
 
+      it "assigns the ingredients to the current user" do
+        ingredients = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th']
+        params = {ingredients:[]}
+        ingredients.each { |i| params[:ingredients] << { name: i } }
+      
+        expect{post '/ingredients', params}.to change{User.last.ingredients.count}.by(10)
+      end
+
       it "lets user create less than 10 ingredients" do      
+        expect(false).to eq(true) 
       end
 
       it "does not let a user save zero ingredients" do 
