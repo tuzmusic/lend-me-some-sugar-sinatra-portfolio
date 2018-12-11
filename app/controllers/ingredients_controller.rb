@@ -30,17 +30,14 @@ class IngredientController < ApplicationController
     redirect "/users/#{user.slug}"
   end
   
-  # Show Action
-  get '/ingredients/:id' do
-    @ingredient = Ingredient.find(params[:id])
-    erb :'/ingredients/show'
-  end
-  
   # Edit Action
-  get '/ingredients/:id/edit' do
-    @ingredient = Ingredient.find(params[:id])
-    @users = User.all
-    erb :'/ingredients/edit'
+  get '/ingredients/edit' do
+    if session[:id]
+      @user = User.find(session[:id])
+      erb :'/ingredients/edit'
+    else 
+      redirect '/'
+    end
   end
   
   # Patch Action
@@ -52,6 +49,12 @@ class IngredientController < ApplicationController
 
     ingredient.save
     redirect "ingredients/#{ingredient.id}"
+  end
+  
+  # Show Action
+  get '/ingredients/:id' do
+    @ingredient = Ingredient.find(params[:id])
+    erb :'/ingredients/show'
   end
   
   # Delete Action
