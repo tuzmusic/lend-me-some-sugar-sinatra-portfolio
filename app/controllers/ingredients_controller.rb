@@ -8,13 +8,17 @@ class IngredientController < ApplicationController
   
   # New Action
   get '/ingredients/new' do
-    @users = User.all
-    erb :'/ingredients/new'
+    if session[:id]
+      @users = User.all
+      erb :'/ingredients/new'
+    else 
+      redirect '/'
+    end
   end
   
   # Create Action
   post '/ingredients' do
-    raise params.inspect
+    # raise params.inspect
     ingredient = Ingredient.create(params['ingredient'])
     ingredient.user = User.create(name: params['user_name']) unless params['user_name'].empty?
 

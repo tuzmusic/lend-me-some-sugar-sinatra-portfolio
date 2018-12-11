@@ -8,6 +8,9 @@ describe 'Ingredients Controller' do
     context "logged out" do
       it "does not let user view new ingredients form if not logged in" do
         get '/ingredients/new'
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)
         expect(last_response.body).to include("Welcome")
       end
     end
@@ -20,15 +23,21 @@ describe 'Ingredients Controller' do
       end
       
       it "lets user view new ingredient form if logged in" do
-        visit '/ingredients/new'
-        expect(page.status_code).to eq(200)
-        expect(page).to have_content 'Add Ingredients'
+        get '/ingredients/new'
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include 'Add Ingredients'
       end
       
-      it "lets user create up to 10 ingredients if they are logged in" do      
-        visit '/ingredients/new'
-        expect(page.status_code).to eq(200)
-        expect(page.all('input[type=text]').count).to eq(10)
+      it "lets user create up to 10 ingredients" do      
+        ingredients = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th']
+        params = {ingredients:[]}
+        ingredients.each { |i| params[:ingredients] << { name: i } }
+        expect(ingredients.count).to eq 10
+      
+        expect{post '/ingredients', params}.to change{Ingredient.all.count}.by(10)
+      end
+
+      it "lets user create less than 10 ingredients" do      
       end
 
       it "does not let a user save zero ingredients" do 
