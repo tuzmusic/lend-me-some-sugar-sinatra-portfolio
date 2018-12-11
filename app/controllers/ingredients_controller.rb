@@ -14,6 +14,7 @@ class IngredientController < ApplicationController
   
   # Create Action
   post '/ingredients' do
+    raise params.inspect
     ingredient = Ingredient.create(params['ingredient'])
     ingredient.user = User.create(name: params['user_name']) unless params['user_name'].empty?
 

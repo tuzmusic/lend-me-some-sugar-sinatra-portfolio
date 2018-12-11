@@ -1,9 +1,11 @@
 <h1>Add Ingredients</h1>
 
-<form action="ingredients/new" method="POST">
-
+<form action="/ingredients" method="POST">
+<h2>Add up to ten ingredients</h2>
+<ol>
 <% 10.times do %>
-  <input type="text" name="ingredients[][name]">
+  <li><input type="text" name="ingredients[][name]"></li>
 <% end %>
-<input type="submit" id="submit" value="save">
+</ol>
+<input type="submit" id="submit" value="Save">
 </form>
