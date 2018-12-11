@@ -1,10 +1,17 @@
-require '../spec_helper'
-require './spec_helpers'
+require 'spec_helper'
+require_relative './spec_helpers'
 require 'pry'
 
 describe 'Ingredients Controller' do
 
-  describe "new ingredient action" do
+  describe "new ingredient action" do    
+    context "logged out" do
+      it "does not let user view new ingredients form if not logged in" do
+        get '/ingredients/new'
+        expect(last_response.body).to include("Welcome")
+      end
+    end
+
     context "logged in" do
       before do
         User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
@@ -13,26 +20,20 @@ describe 'Ingredients Controller' do
       end
       
       it "lets user view new ingredient form if logged in" do
-        UserHelper.create_and_login_user
         visit '/ingredients/new'
         expect(page.status_code).to eq(200)
+        expect(page).to have_content 'Add Ingredients'
       end
-  
-      it "lets user create up to 10 ingredients if they are logged in" do
-        UserHelper.create_and_login_user
-  
+      
+      it "lets user create up to 10 ingredients if they are logged in" do      
         visit '/ingredients/new'
-        expect(false).to eq(true)
+        expect(page.status_code).to eq(200)
+        expect(page.all('input[type=text]').count).to eq(10)
       end
-  
+
       it "does not let a user save zero ingredients" do 
         expect(false).to eq(true) 
       end
-    end
-    
-    it "does not let user view new ingredients form if not logged in" do
-      get '/ingredients/new'
-      expect(last_response.location).to include("/")
     end
   end
   
