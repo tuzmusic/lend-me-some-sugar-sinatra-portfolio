@@ -1,0 +1,12 @@
+<h1>Edit Your Ingredients</h1>
+
+<form action="/ingredients" method="POST">
+<input type="hidden" name="_method" value="PATCH">
+
+<ol>
+<% @user.ingredients.each do |ingredient| %>
+  <li><input type="text" value = "<%= ingredient.name %>" name="ingredients[][name]"></li>
+<% end %>
+</ol>
+<input type="submit" id="submit" value="Save">
+</form>

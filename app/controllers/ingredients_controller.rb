@@ -32,6 +32,7 @@ class IngredientController < ApplicationController
   
   # Edit Action
   get '/ingredients/edit' do
+    # binding.pry
     if session[:id]
       @user = User.find(session[:id])
       erb :'/ingredients/edit'

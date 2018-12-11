@@ -79,7 +79,7 @@ describe 'Ingredients Controller' do
   
   describe "edit ingredients action" do
     context "logged out" do
-      it "doesn't let a user view ingredient edit form if they are logged out" do
+      xit "doesn't let a user view ingredient edit form if they are logged out" do
         get '/ingredients/edit'
         expect(last_response.status).to eq(302)
         follow_redirect!
@@ -90,17 +90,18 @@ describe 'Ingredients Controller' do
     
      context "logged in" do
       before do
-        User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
-        params = { username: "becky567", password: "kittens" }
-        post '/login', params           
-
+        user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
         Ingredient.create(name: 'parsley', user_id: user.id)
         Ingredient.create(name: 'cumin', user_id: user.id)
         Ingredient.create(name: 'basil', user_id: user.id)
-        
+                
+        visit '/'
+        fill_in('username', with: 'becky567')
+        fill_in('password', with: 'kittens')
+        click_button 'Log In'
         visit '/ingredients/edit'
       end
-
+      
       it "lets a user view ingredient edit form if they are logged in" do
         expect(page.status_code).to eq(200)
         expect(page.body).to include("Edit Your Ingredients")
