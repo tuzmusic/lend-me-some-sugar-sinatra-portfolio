@@ -1,1 +1,9 @@
 <h1>Add Ingredients</h1>
+
+<form action="ingredients/new" method="POST">
+
+<% 10.times do %>
+  <input type="text" name="ingredients[][name]">
+<% end %>
+<input type="submit" id="submit" value="save">
+</form>
