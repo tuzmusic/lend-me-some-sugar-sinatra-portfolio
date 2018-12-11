@@ -5,21 +5,29 @@ require 'pry'
 describe 'Ingredients Controller' do
 
   describe "new ingredient action" do
-    it "lets user view new ingredient form if logged in" do
-      UserHelper.create_and_login_user
-      visit '/ingredients/new'
-      expect(page.status_code).to eq(200)
-    end
-
-    it "lets user create up to 10 ingredients if they are logged in" do
-      UserHelper.create_and_login_user
-
-      visit '/ingredients/new'
-      expect(false).to eq(true)
-    end
-
-    it "does not let a user save zero ingredients" do 
-      expect(false).to eq(true) 
+    context "logged in" do
+      before do
+        User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+        params = { username: "becky567", password: "kittens" }
+        post '/login', params           
+      end
+      
+      it "lets user view new ingredient form if logged in" do
+        UserHelper.create_and_login_user
+        visit '/ingredients/new'
+        expect(page.status_code).to eq(200)
+      end
+  
+      it "lets user create up to 10 ingredients if they are logged in" do
+        UserHelper.create_and_login_user
+  
+        visit '/ingredients/new'
+        expect(false).to eq(true)
+      end
+  
+      it "does not let a user save zero ingredients" do 
+        expect(false).to eq(true) 
+      end
     end
     
     it "does not let user view new ingredients form if not logged in" do
