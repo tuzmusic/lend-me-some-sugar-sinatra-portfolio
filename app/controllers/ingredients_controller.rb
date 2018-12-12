@@ -70,6 +70,7 @@ class IngredientController < ApplicationController
   end
   
   # Delete Action
+  # we never actually get here
   delete '/ingredients/:id' do
     ingredient = Ingredient.find(params[:id])
     ingredient.delete
