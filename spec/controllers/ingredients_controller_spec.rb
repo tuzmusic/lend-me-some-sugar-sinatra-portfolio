@@ -123,7 +123,7 @@ describe 'Ingredients Controller' do
         expect(page.body).to include('basil')
       end
   
-      it "lets a user edit their ingedients" do
+      it "lets a user edit a single ingedient" do
         fill_in("#{Ingredient.first.id}-field", with: "paprika")  
         click_button 'Save'
 
@@ -131,6 +131,20 @@ describe 'Ingredients Controller' do
         expect(Ingredient.find_by(name: "parsley")).to eq(nil)
         expect(User.first.ingredients.first.name).to eq('paprika')
         expect(User.first.ingredients.last.name).to eq('basil')
+        expect(page.status_code).to eq(200)
+      end
+      
+      it "lets a user edit multiple ingedients" do
+        fill_in("#{Ingredient.first.id}-field", with: "paprika")  
+        fill_in("#{Ingredient.last.id}-field", with: "lettuce")  
+        click_button 'Save'
+
+        expect(Ingredient.find_by(name: "paprika")).to be_instance_of(Ingredient)
+        expect(Ingredient.find_by(name: "lettuce")).to be_instance_of(Ingredient)
+        expect(Ingredient.find_by(name: "parsley")).to eq(nil)
+        expect(Ingredient.find_by(name: "basil")).to eq(nil)
+        expect(User.first.ingredients.first.name).to eq('paprika')
+        expect(User.first.ingredients.last.name).to eq('lettuce')
         expect(page.status_code).to eq(200)
       end
       
