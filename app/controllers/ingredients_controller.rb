@@ -72,6 +72,10 @@ class IngredientController < ApplicationController
     elsif !@ingredient
       "No ingredient called '#{params[:slug]}' could be found."
     else
+      @users_with = User.all.select do |user|
+        ings = user.ingredients.map {|i| i.name.downcase}
+        ings.include?(params[:slug].downcase)
+      end
       erb :'/ingredients/show'
     end
   end

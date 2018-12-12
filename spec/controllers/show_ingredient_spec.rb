@@ -51,10 +51,10 @@ describe "show ingredient action" do
       end
 
       it "lists all the users who have an ingredient with the same name" do
-        parsley = Ingredient.first
         ["becky566","becky568","becky569"].each do |name|
           user = User.create(username: name, email: "starz@aol.com", password: "kittens")
           user.ingredients << Ingredient.create(name: 'cumin')
+          user.ingredients << Ingredient.create(name: 'radishes')
           user.save
         end
 
@@ -63,6 +63,29 @@ describe "show ingredient action" do
         expect(last_response.body).to include('becky566')
         expect(last_response.body).to include('becky568')
         expect(last_response.body).to include('becky569')
+      end
+
+      it "finds the ingredient even if it's cased differenly" do
+        ["becky566","becky568","becky569"].each do |name|
+          User.create(username: name, email: "starz@aol.com", password: "kittens")
+        end
+        get "/ingredients/cumin"
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include('becky566')
+        expect(last_response.body).to include('becky568')
+        expect(last_response.body).to include('becky569')
+      end
+
+      it "includes links to each user's show page" do
+        ["becky566","becky568","becky569"].each do |name|
+          User.create(username: name, email: "starz@aol.com", password: "kittens")
+        end
+        get "/ingredients/cumin"
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include('users/becky566')
+        expect(last_response.body).to include('users/becky568')
+        expect(last_response.body).to include('users/becky569')
+        
       end
 
       it "does not list users who don't have the ingredient" do
