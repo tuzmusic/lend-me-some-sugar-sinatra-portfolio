@@ -9,7 +9,7 @@ class IngredientController < ApplicationController
   # New Action
   get '/ingredients/new' do
     if session[:id]
-      @users = User.all
+      @user = User.find(session[:id])
       erb :'/ingredients/new'
     else 
       redirect '/'

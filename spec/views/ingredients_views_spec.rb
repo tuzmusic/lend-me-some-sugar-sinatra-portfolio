@@ -3,26 +3,16 @@ require 'spec_helper'
 
 describe 'Ingredients Views' do
 
-  describe "index page" do
-    
-  end
-
-  describe "show page" do
-    it "displays an ingredient and shows all users who have listed that ingredient (by text search, not by 'ingredient has_many :users')" do
-      expect(false).to eq(true)
-    end
-    
-    it "links to each user's show page" do
-      expect(false).to eq(true)
-    end
-    
-  end
-  
   describe "new page" do
     before do
       user = User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
       params = { username: "becky567", password: "kittens" }
-      post '/login', params
+      # post '/login', params
+
+      visit '/'
+      fill_in 'username', with: "becky567"
+      fill_in 'password', with: "kittens"
+      click_button 'Log In'
     end
     
     it "has a form to add up to ten ingredients" do
@@ -32,15 +22,25 @@ describe 'Ingredients Views' do
     end
 
     it "shows a user's current ingredients" do
-      Ingredient.create(name:'parsley')
-      Ingredient.create(name:'basil')
-      Ingredient.create(name:'cumin')
+      Ingredient.create(name:'parsley', user_id: User.last.id)
+      Ingredient.create(name:'basil', user_id: User.last.id)
+      Ingredient.create(name:'cumin', user_id: User.last.id)
 
       visit '/ingredients/new'
       expect(page.status_code).to eq(200)
-      expect(page).to have_content('basil')
-      expect(page).to have_content('parsley')
-      expect(page).to have_content('cumin')
+      expect(page.body).to include('basil')
+      expect(page.body).to include('parsley')
+      expect(page.body).to include('cumin')
+    end
+  end
+
+  describe "show page" do
+    it "has a button to add ingredients" do
+      expect(false).to eq(true)
+    end
+
+    it "has a button to edit ingredients" do
+      expect(false).to eq(true)
     end
   end
 

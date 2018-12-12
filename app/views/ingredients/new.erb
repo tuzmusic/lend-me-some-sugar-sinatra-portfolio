@@ -1,11 +1,26 @@
 <h1>Add Ingredients</h1>
 
 <form action="/ingredients" method="POST">
-<h2>Add up to ten ingredients</h2>
-<ol>
-<% 10.times do %>
-  <li><input type="text" name="ingredients[][name]"></li>
-<% end %>
-</ol>
-<input type="submit" id="submit" value="Save">
+
+  <table cellpadding="9em">
+    <tr>
+      <th>Add up to ten ingredients</th>
+      <th>Your current ingredients</th>
+    </tr>
+
+    <tr>
+      <td valign="top"><ol>
+        <% 10.times do %>
+        <li><input type="text" name="ingredients[][name]"></li>
+        <% end %>
+      </ol></td>
+      <td valign="top"><ol>
+      <% @user.ingredients.each do |ingredient| %>
+        <li><%= ingredient.name %></li>
+      <% end %>
+      </ol></td>
+    </tr>
+
+  </table>
+  <input type="submit" id="submit" value="Save">
 </form>
