@@ -69,6 +69,9 @@ describe "show ingredient action" do
         ["becky566","becky568","becky569"].each do |name|
           User.create(username: name, email: "starz@aol.com", password: "kittens")
         end
+        User.find_by_slug("becky566").ingredients << Ingredient.create(name:"cumin")
+        User.find_by_slug("becky569").ingredients << Ingredient.create(name:"CUMIN")
+        User.find_by_slug("becky568").ingredients << Ingredient.create(name:"CumiN")
         get "/ingredients/cumin"
         expect(last_response.status).to eq(200)
         expect(last_response.body).to include('becky566')
@@ -78,14 +81,14 @@ describe "show ingredient action" do
 
       it "includes links to each user's show page" do
         ["becky566","becky568","becky569"].each do |name|
-          User.create(username: name, email: "starz@aol.com", password: "kittens")
+          user = User.create(username: name, email: "starz@aol.com", password: "kittens")
+          user.ingredients << Ingredient.create(name: 'cumin')          
         end
         get "/ingredients/cumin"
         expect(last_response.status).to eq(200)
         expect(last_response.body).to include('users/becky566')
         expect(last_response.body).to include('users/becky568')
         expect(last_response.body).to include('users/becky569')
-        
       end
 
       it "does not list users who don't have the ingredient" do
