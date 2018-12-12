@@ -64,9 +64,9 @@ class IngredientController < ApplicationController
   end
   
   # Show Action
-  get '/ingredients/:id' do
+  get '/ingredients/:slug' do
     if session[:id]
-      @ingredient = Ingredient.find(params[:id])
+      @ingredient = Ingredient.find_by_slug(params[:slug])
       erb :'/ingredients/show'
     else 
       redirect '/'

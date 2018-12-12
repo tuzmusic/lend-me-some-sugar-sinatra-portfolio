@@ -27,7 +27,8 @@ describe "show ingredient action" do
       end
       
       it "is accessed by a slug" do
-        
+        get "/ingredients/#{Ingredient.first.slug}"
+        expect(last_response.body).to include(Ingredient.first.name)
       end
 
       it "shows the name of the ingredient" do
