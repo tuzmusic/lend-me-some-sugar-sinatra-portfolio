@@ -79,7 +79,7 @@ describe 'Ingredients Controller' do
   
   describe "edit ingredients action" do
     context "logged out" do
-      xit "doesn't let a user view ingredient edit form if they are logged out" do
+      it "doesn't let a user view ingredient edit form if they are logged out" do
         get '/ingredients/edit'
         expect(last_response.status).to eq(302)
         follow_redirect!
@@ -179,11 +179,8 @@ describe 'Ingredients Controller' do
       it "does not let a user blank out an existing ingredient" do
         fill_in("#{Ingredient.first.id}-field", with: "")  
         click_button "Save"
-        expect(last_response.status).to eq(302)
-        follow_redirect!
-        expect(last_response.status).to eq(200)
-        expect(last_response.body).to include("Edit Your Ingredients")
-        expect(last_response.body).to include("You cannot leave an existing ingredient blank. To delete ingredients, use the checkboxes.")
+        expect(page.body).to include("Edit Your Ingredients")
+        expect(page.body).to include("You cannot leave an existing ingredient blank. To delete ingredients, use the checkboxes.")
       end
     end
 
