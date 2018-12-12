@@ -151,7 +151,15 @@ describe 'Ingredients Controller' do
         expect {
           check "#{Ingredient.first.id}-box"
           click_button "Save"
-        }.to change { Ingredient.all.count }.by(1)
+        }.to change { Ingredient.all.count }.by(-1)
+      end
+
+      it "lets a user delete multiple ingredients using checkboxes" do
+        expect {
+          check "#{Ingredient.first.id}-box"
+          check "#{Ingredient.last.id}-box"
+          click_button "Save"
+        }.to change { Ingredient.all.count }.by(-2)
       end
 
       it "does not let a user blank out an existing ingredient" do

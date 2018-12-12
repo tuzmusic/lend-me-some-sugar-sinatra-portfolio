@@ -44,10 +44,15 @@ class IngredientController < ApplicationController
   patch '/ingredients' do
 
     params[:ingredients].each do |ingredient|
-      binding.pry
       ing = Ingredient.find(ingredient[:id])
-      ing.update(ingredient)
-      ing.save
+      if ingredient[:delete]
+        # this should reroute to the delete route, but it's not working.
+        # call env.merge("REQUEST_METHOD" => 'delete',"PATH_INFO" => "/ingredients/#{ing.id}")
+        ing.delete
+      else
+        ing.update(ingredient)
+        ing.save
+      end
     end
 
     redirect "users/#{current_user.slug}"
