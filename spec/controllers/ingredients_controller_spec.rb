@@ -140,7 +140,11 @@ describe 'Ingredients Controller' do
       end
 
       it "has checkboxes for deleting each ingredient" do
-        expect(page.all('input[type=checkbox]').count).to eq(3)        
+        expect(page.all('input[type=checkbox]').count).to eq(3)
+      end
+
+      it "displays the textboxes in a table column" do
+        expect(page.body).to include('<table>')
       end
 
       it "lets a user delete ingredients using checkboxes" do

@@ -1,14 +1,26 @@
 <h1>Edit Your Ingredients</h1>
 
 <form action="/ingredients" method="POST">
-<input type="hidden" name="_method" value="PATCH">
+  <input type="hidden" name="_method" value="PATCH">
 
-<ol>
-<% @user.ingredients.each do |ingredient| %>
-  <li><input type="text" value = "<%= ingredient.name %>" id = "<%= ingredient.id %>-field" name="ingredients[][name]">
-    <input type="hidden" value = "<%= ingredient.id %>" name = "ingredients[][id]">
-  </li>
-<% end %>
-</ol>
-<input type="submit" id="submit" value="Save">
+  <table>
+    <tr>
+      <th align="left">Edit</th>
+      <th align>Delete</th>
+    </tr>
+    <ol>
+      <% @user.ingredients.each do |ingredient| %>
+      <tr>
+        <td>
+          <input type="text" value="<%= ingredient.name %>" id="<%= ingredient.id %>-field" name="ingredients[][name]">
+        </td>
+        <td>
+          <input type="checkbox" value="<%= ingredient.name %>" id="<%= ingredient.id %>-box" name="ingredients[][name]">
+          <input type="hidden" value="<%= ingredient.id %>" name="ingredients[][id]">
+        </td>
+      </tr>
+      <% end %>
+  </table>
+
+  <input type="submit" id="submit" value="Save">
 </form>
