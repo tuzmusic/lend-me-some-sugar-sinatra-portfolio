@@ -181,10 +181,9 @@ describe 'Ingredients Controller' do
         click_button "Save"
         expect(page.body).to include("Edit Your Ingredients")
         expect(page.body).to include("You cannot leave an existing ingredient blank. To delete ingredients, use the checkboxes.")
+        expect(Ingredient.all.count).to eq(3)
       end
     end
-
-
   end
 
   describe "delete ingredient action" do

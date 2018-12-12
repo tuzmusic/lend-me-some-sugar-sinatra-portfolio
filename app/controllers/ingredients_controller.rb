@@ -43,19 +43,24 @@ class IngredientController < ApplicationController
   # Patch Action
   patch '/ingredients' do
 
-    params[:ingredients].each do |ingredient|
-      ing = Ingredient.find(ingredient[:id])
-      if ingredient[:delete]
-        # this should reroute to the delete route, but it's not working.
-        # call env.merge("REQUEST_METHOD" => 'delete',"PATH_INFO" => "/ingredients/#{ing.id}")
-        ing.delete
-      else
-        ing.update(ingredient)
-        ing.save
-      end
+    if params[:ingredients].any? { |i| i[:name].empty?}
+      session[:flash] = "You cannot leave an existing ingredient blank. To delete ingredients, use the checkboxes."
+      redirect 'ingredients/edit'
+    else 
+      params[:ingredients].each do |ingredient|
+        ing = Ingredient.find(ingredient[:id])
+        if ingredient[:delete]
+          # this should reroute to the delete route, but it's not working.
+          # call env.merge("REQUEST_METHOD" => 'delete',"PATH_INFO" => "/ingredients/#{ing.id}")
+          ing.delete
+        else
+          ing.update(ingredient)
+          ing.save
+        end
+      end  
+      redirect "users/#{current_user.slug}"
     end
 
-    redirect "users/#{current_user.slug}"
   end
   
   # Show Action
