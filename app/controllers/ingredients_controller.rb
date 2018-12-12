@@ -45,12 +45,12 @@ class IngredientController < ApplicationController
   patch '/ingredients' do
 
     params[:ingredients].each do |ingredient|
-      ingredient.update(ingredient)
-      # ingredient.save
-      binding.pry
+      ing = Ingredient.find(ingredient[:id])
+      ing.update(ingredient)
+      ing.save
     end
 
-    redirect "users/#{session[:id]}"
+    redirect "users/#{current_user.slug}"
   end
   
   # Show Action
