@@ -126,7 +126,7 @@ describe 'Ingredients Controller' do
       it "lets a user edit their ingedients" do
         fill_in("#{Ingredient.first.id}-field", with: "paprika")  
         click_button 'Save'
-        
+
         expect(Ingredient.find_by(name: "paprika")).to be_instance_of(Ingredient)
         expect(Ingredient.find_by(name: "parsley")).to eq(nil)
         expect(User.first.ingredients.first.name).to eq('paprika')
@@ -136,10 +136,7 @@ describe 'Ingredients Controller' do
       
       it "redirects to the user's show page" do
         click_button 'Save'
-        expect(last_response.status).to eq(302)
-        follow_redirect!
-        expect(last_response.status).to eq(200)
-        expect(last_response.body).to include("becky567's ingredients")
+        expect(page.body).to include("becky567's ingredients")
       end
 
       it "has checkboxes for deleting each ingredient" do
