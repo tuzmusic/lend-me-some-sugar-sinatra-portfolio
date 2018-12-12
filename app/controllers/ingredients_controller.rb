@@ -65,13 +65,13 @@ class IngredientController < ApplicationController
   
   # Show Action
   get '/ingredients/:slug' do
-    if session[:id]
-      @ingredient = Ingredient.find_by_slug(params[:slug])
-      erb :'/ingredients/show'
-    else 
+    if !session[:id]
       redirect '/'
+    elsif @ingredient = Ingredient.find_by_slug(params[:slug]) && @ingredient
+      erb :'/ingredients/show'
+    else
+      "No ingredient called '#{params[:slug]}' could be found."
     end
-
   end
   
   # Delete Action
