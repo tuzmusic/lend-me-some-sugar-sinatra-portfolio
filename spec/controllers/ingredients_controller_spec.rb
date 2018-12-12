@@ -124,9 +124,10 @@ describe 'Ingredients Controller' do
       end
   
       it "lets a user edit their ingedients" do
-        fill_in('ingredients[0][name]', with: "paprika")  
+        first_text_field = page.all('input[type=text]').first
+        fill_in("#{Ingredient.first.id}-field", with: "paprika")  
         click_button 'Save'
-
+        binding.pry
         expect(Ingredient.find_by(name: "paprika")).to be_instance_of(Ingredient)
         expect(Ingredient.find_by(name: "parsley")).to eq(nil)
         expect(User.first.ingredients.first.name).to eq('paprika')
@@ -151,7 +152,8 @@ describe 'Ingredients Controller' do
       end
 
       it "does not let a user blank out an existing ingredient" do
-        fill_in('ingredients[0][name]', with: "")  
+        first_text_field = page.all('input[type=text]').first
+        fill_in(first_text_field, with: "")  
         click_button "Save"
         expect(last_response.status).to eq(302)
         follow_redirect!

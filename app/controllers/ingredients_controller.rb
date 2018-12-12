@@ -42,8 +42,8 @@ class IngredientController < ApplicationController
   end
   
   # Patch Action
-  patch '/ingredients/:id' do
-
+  patch '/ingredients' do
+    binding.pry
     ingredient = Ingredient.find(params[:id])
     ingredient.update(params['ingredient'])
     ingredient.user = User.create(name: params['user_name']) unless params['user_name'].empty?

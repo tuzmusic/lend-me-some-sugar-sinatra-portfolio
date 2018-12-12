@@ -5,7 +5,7 @@
 
 <ol>
 <% @user.ingredients.each do |ingredient| %>
-  <li><input type="text" value = "<%= ingredient.name %>" name="ingredients[][name]"></li>
+  <li><input type="text" value = "<%= ingredient.name %>" id = "<%= ingredient.id %>-field" name="ingredients[][name]"></li>
 <% end %>
 </ol>
 <input type="submit" id="submit" value="Save">
