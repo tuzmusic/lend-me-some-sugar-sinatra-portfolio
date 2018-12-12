@@ -186,43 +186,6 @@ describe 'Ingredients Controller' do
     end
   end
 
-  describe "delete ingredient action" do
-    context "logged in" do
-      it "lets a user delete their own ingredient if they are logged in" do
-        user = UserHelper.create_user_and_click_login
-        ingredient = UserHelper.create_parsley(user)
-        visit 'tweets/1'
-        click_button "Delete Ingredient"
-        expect(page.status_code).to eq(200)
-        expect(Ingredient.find_by(name: "tweeting!")).to eq(nil)
-      end
-
-      it "does not let a user delete an ingredient they did not create" do
-
-        expect('the show page is different from the model in twitter...').to eq()
-        user = UserHelper.create_user_and_click_login
-        ingredient = UserHelper.create_parsley(user)
-
-        user2 = User.create(name: "silverstallion", email: "silver@aol.com", password: "horses")
-        tweet2 = Ingredient.create(name: "paprika", user_id: user2.id)
-
-        visit "ingredients/#{ingredient2.id}"
-        click_button "Delete Ingredient"
-        expect(page.status_code).to eq(200)
-        expect(Ingredient.find_by(name: "paprika")).to be_instance_of(Ingredient)
-        expect(page.current_path).to include('/index')
-      end
-    end
-
-    context "logged out" do
-      it "does not load let user delete an ingredient if not logged in" do
-        expect(false).to eq(true)
-        tweet = Ingredient.create(name: "sugar", user_id: 1)
-        visit '/ingredients/1'
-        expect(page.current_path).to eq("/login")
-      end
-    end
-  end
 
   describe "show ingredient action" do
 

@@ -26,13 +26,22 @@ describe "show ingredient action" do
         Ingredient.create(name: 'parsley', user_id: user.id)
       end
       
-      it "shows the name of the ingredient" do
-        get "/ingredients/#{Ingredient.first.id}"
-        expect(last_response.body).to include('parsley')
+      it "is accessed by a slug" do
+        
       end
 
-      it "lists all the users who have this ingredient" do
-        
+      it "shows the name of the ingredient" do
+        get "/ingredients/#{Ingredient.first.slug}"
+        expect(last_response.body).to include(Ingredient.first.name)
+      end
+
+      it "lists all the users who have an ingredient with the same name" do
+        parsley = Ingredient.first
+        ["becky566","becky568","becky569"].each do |name|
+          user = User.create(username: name, email: "starz@aol.com", password: "kittens")
+          user.ingredients << Ingredient.create(name: 'cumin')
+          user.save
+        end
       end
     end
 
