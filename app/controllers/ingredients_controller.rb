@@ -65,8 +65,13 @@ class IngredientController < ApplicationController
   
   # Show Action
   get '/ingredients/:id' do
-    @ingredient = Ingredient.find(params[:id])
-    erb :'/ingredients/show'
+    if session[:id]
+      @ingredient = Ingredient.find(params[:id])
+      erb :'/ingredients/show'
+    else 
+      redirect '/'
+    end
+
   end
   
   # Delete Action
