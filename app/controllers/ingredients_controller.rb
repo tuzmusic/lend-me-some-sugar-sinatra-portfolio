@@ -32,7 +32,6 @@ class IngredientController < ApplicationController
   
   # Edit Action
   get '/ingredients/edit' do
-    # binding.pry
     if session[:id]
       @user = current_user
       erb :'/ingredients/edit'
@@ -45,6 +44,7 @@ class IngredientController < ApplicationController
   patch '/ingredients' do
 
     params[:ingredients].each do |ingredient|
+      binding.pry
       ing = Ingredient.find(ingredient[:id])
       ing.update(ingredient)
       ing.save

@@ -15,7 +15,7 @@
           <input type="text" value="<%= ingredient.name %>" id="<%= ingredient.id %>-field" name="ingredients[][name]">
         </td>
         <td>
-          <input type="checkbox" value="<%= ingredient.name %>" id="<%= ingredient.id %>-box" name="ingredients[][name]">
+          <input type="checkbox" id="<%= ingredient.id %>-box" name="ingredients[][delete]">
           <input type="hidden" value="<%= ingredient.id %>" name="ingredients[][id]">
         </td>
       </tr>
