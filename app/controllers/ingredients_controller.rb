@@ -43,13 +43,14 @@ class IngredientController < ApplicationController
   
   # Patch Action
   patch '/ingredients' do
-    binding.pry
-    ingredient = Ingredient.find(params[:id])
-    ingredient.update(params['ingredient'])
-    ingredient.user = User.create(name: params['user_name']) unless params['user_name'].empty?
 
-    ingredient.save
-    redirect "ingredients/#{ingredient.id}"
+    params[:ingredients].each do |ingredient|
+      ingredient.update(ingredient)
+      # ingredient.save
+      binding.pry
+    end
+
+    redirect "users/#{session[:id]}"
   end
   
   # Show Action
