@@ -126,6 +126,7 @@ describe 'Ingredients Controller' do
       it "lets a user edit their ingedients" do
         fill_in("#{Ingredient.first.id}-field", with: "paprika")  
         click_button 'Save'
+        
         expect(Ingredient.find_by(name: "paprika")).to be_instance_of(Ingredient)
         expect(Ingredient.find_by(name: "parsley")).to eq(nil)
         expect(User.first.ingredients.first.name).to eq('paprika')

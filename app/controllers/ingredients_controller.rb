@@ -18,7 +18,7 @@ class IngredientController < ApplicationController
   
   # Create Action
   post '/ingredients' do
-    user = User.find(session[:id])
+    user = current_user
 
     params[:ingredients].each do |ingredient|
       next if ingredient[:name].empty?
@@ -34,7 +34,7 @@ class IngredientController < ApplicationController
   get '/ingredients/edit' do
     # binding.pry
     if session[:id]
-      @user = User.find(session[:id])
+      @user = current_user
       erb :'/ingredients/edit'
     else 
       redirect '/'
