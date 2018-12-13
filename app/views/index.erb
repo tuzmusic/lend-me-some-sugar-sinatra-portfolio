@@ -1,22 +1,27 @@
 <h1>Lend Me Some Sugar!</h1>
 <h2><i>I am your neighbor!</i></h2>
 
-<h2>Users</h2>
-<ol>
-  <% @users.each do |user| %>
-  <li>
-    <a href="/users/<%= user.slug %>"><%= user.username %></a>
-  </li>
-  <% end %>
-</ol>
+<div id="users-list">
+  <h2>Users</h2>
+  <ol>
+    <% @users.each do |user| %>
+    <li>
+      <a href="/users/<%= user.slug %>">
+        <%= user.username %></a>
+    </li>
+    <% end %>
+  </ol>
+</div>
 
-<h2>Ingredients</h2>
-<ol>
-  <% @ingredients.each do |ingredient| %>
-  <li>
-    <a href="/ingredients/<%= ingredient.slug %>"><%= ingredient.name %></a>
-  </li>
-  <% end %>
-</ol>
-
+<div id="ingredients-list">
+  <h2>Ingredients</h2>
+  <ol>
+    <% @ingredients.each do |ingredient| %>
+    <li>
+      <a href="/ingredients/<%= ingredient.slug %>">
+        <%= ingredient.name %></a>
+    </li>
+    <% end %>
+  </ol>
+</div>
 <a href="/logout">Log Out</a>
