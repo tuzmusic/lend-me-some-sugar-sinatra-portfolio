@@ -27,7 +27,7 @@ class IngredientController < ApplicationController
       ingredient.save
     end
 
-    redirect "/users/#{user.slug}"
+    redirect "/index"
   end
   
   # Edit Action
@@ -58,7 +58,7 @@ class IngredientController < ApplicationController
           ing.save
         end
       end  
-      redirect "users/#{current_user.slug}"
+      redirect "index"
     end
 
   end

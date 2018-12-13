@@ -11,8 +11,9 @@
     </li>
     <% end %>
   </ol>
-  <p><a href="/ingredients/new">Add ingredients</a></p>
-  <p><a href="/ingredients/edit">Edit your ingredients</a></p>
+  <a href="/ingredients/new">Add Ingredients</a>
+  &emsp;
+  <a href="/ingredients/edit">Edit Your Ingredients</a>
 </div>
 
 
@@ -24,9 +25,9 @@
     <% @users.each do |user| %>
     <li>
       <a href="/users/<%= user.slug %>">
-        <%= user.username %> 
+        <%= user.username %>
         <% if user.id == @current_user.id %>
-          (You)
+        (You)
         <% end %>
       </a>
     </li>
