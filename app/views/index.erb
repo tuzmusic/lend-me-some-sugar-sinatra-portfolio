@@ -10,4 +10,13 @@
   <% end %>
 </ol>
 
+<h2>Ingredients</h2>
+<ol>
+  <% @ingredients.each do |ingredient| %>
+  <li>
+    <a href="/ingredients/<%= ingredient.slug %>"><%= ingredient.name %></a>
+  </li>
+  <% end %>
+</ol>
+
 <a href="/logout">Log Out</a>
