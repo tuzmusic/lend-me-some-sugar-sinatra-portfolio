@@ -15,7 +15,7 @@ class UserController < ApplicationController
       session[:flash] = "You must enter a username and password."
       redirect '/' 
     else 
-      user = User.find_by(username: params[:username])    
+      user = User.find_by(username: params[:username]) || User.find_by(email: params[:username])        
       if user && user.authenticate(params[:password])
         session[:id] = user.id
         redirect '/index'

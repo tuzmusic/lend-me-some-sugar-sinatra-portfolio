@@ -21,6 +21,16 @@ describe 'Users & Main Controller' do
       expect(last_response.body).to include('Lend Me Some Sugar')
     end
 
+    it "lets a user login with email as well as username" do
+      User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+      params = { username: "starz@aol.com", password: "kittens" }
+      post '/login', params 
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include('Lend Me Some Sugar')
+    end
+
     it "redirects you to the index if already logged in" do
       User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
       params = { username: "becky567", password: "kittens" }
