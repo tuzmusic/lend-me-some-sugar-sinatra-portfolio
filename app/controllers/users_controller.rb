@@ -58,6 +58,7 @@ class UserController < ApplicationController
   get '/index' do
     if session[:id]
       @users = User.all
+      @current_user = current_user
       @ingredients = Ingredient.all
       erb :index
     else
