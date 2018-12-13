@@ -44,14 +44,14 @@ class UserController < ApplicationController
   # Create User (Sign Up) Action
   post '/users' do
     valid_email_regex = /\A([\w+\-]\.?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
-    username, email, password = params[:user][:username], params[:user][:password], params[:user][:email]
-    if params[:user][:username].empty? || params[:user][:password].empty? || params[:user][:email].empty?
+    username, password, email = params[:user][:username], params[:user][:password], params[:user][:email]
+    if username.empty? || password.empty? || email.empty?
       session[:flash] = "You must enter a username, email and password."
       redirect '/signup' 
-    elsif User.find_by(username: params[:user][:username])
-      session[:flash] = "Username '#{params[:user][:username]}' already exists. Try another username."
+    elsif User.find_by(username: username)
+      session[:flash] = "Username '#{username}' already exists. Try another username."
       redirect '/signup' 
-    elsif !(params[:user][:email] =~ valid_email_regex)
+    elsif !(email =~ valid_email_regex)
       session[:flash] = "You must enter a valid email address."
       redirect '/signup' 
     else 
