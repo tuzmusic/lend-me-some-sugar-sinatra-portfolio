@@ -105,12 +105,31 @@ describe 'Users & Main Controller' do
     end
 
     it "does not let a user sign up without a password" do
-      params = { 'user[username]': "skittles123", 'user[email]': "skittles@aol.com", 'user[password]': "" }
+      params = { 'user[username]': "skittles123", 'user[email]': "skittles@aol.com", 'user[password]': "1234" }
       post '/users', params  
       expect(last_response.status).to eq(302)
       follow_redirect!
       expect(last_response.status).to eq(200)
       expect(last_response.body).to include('You must enter a username, email and password.')
+    end
+
+    it "does not let a user sign up with an invalid email address" do
+      params = { 'user[username]': "skittles123", 'user[email]': "skittlesaol.com", 'user[password]': "1234" }
+      post '/users', params  
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include('You must enter a valid email address.')
+    end
+    
+    it "does not let a user sign up with an existing username" do
+      User.create(username: "becky567", email: "starz@aol.com", password: "kittens")
+      params = { 'user[username]': "becky567", 'user[email]': "skittlesaol.com", 'user[password]': "" }
+      post '/users', params  
+      expect(last_response.status).to eq(302)
+      follow_redirect!
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include("Username 'becky567' already exists. Try another username.")
     end
 
     it "redirects a logged in user to the index page" do

@@ -70,7 +70,8 @@ class IngredientController < ApplicationController
     if !session[:id]
       redirect '/'
     elsif !@ingredient
-      "No ingredient called '#{params[:slug]}' could be found."
+      session[:flash] = "No ingredient called '#{params[:slug]}' could be found."
+      redirect '/'
     else
       @users_with = User.all.select do |user|
         ings = user.ingredients.map {|i| i.name.downcase}
