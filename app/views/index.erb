@@ -2,6 +2,18 @@
 <h2><i>I am your neighbor!</i></h2>
 
 <div id="your-ingredients-list">
+  <h2>Your Ingredients</h2>
+  <ol>
+    <% @current_user.ingredients.each do |ingredient| %>
+    <li>
+      <a href="/ingredients/<%= ingredient.slug %>">
+        <%= ingredient.name %></a>
+    </li>
+    <% end %>
+  </ol>
+  <p><a href="/ingredients/new">Add ingredients</a></p>
+  <p><a href="/ingredients/edit">Edit your ingredients</a></p>
+</div>
 
 
 </div>
