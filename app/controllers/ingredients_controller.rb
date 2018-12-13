@@ -18,15 +18,18 @@ class IngredientController < ApplicationController
   
   # Create Action
   post '/ingredients' do
-    user = current_user
-
     params[:ingredients].each do |ingredient|
       next if ingredient[:name].empty?
-      ingredient = Ingredient.create(ingredient)
-      ingredient.user = user
-      ingredient.save
+      if current_user.ingredients.map {|i| i.name.downcase}.include?(ingredient[:name].downcase)
+        msg = "You cannot add #{ingredient[:name]} because you already have it."
+        session[:flash] = session[:flash] ? session[:flash]+"<br>"+ msg : msg
+      else
+        ingredient = Ingredient.create(ingredient)
+        ingredient.user = current_user
+        ingredient.save
+      end
     end
-
+    session[:flash] += "<br>Your other ingredients have been added." if session[:flash]
     redirect "/index"
   end
   

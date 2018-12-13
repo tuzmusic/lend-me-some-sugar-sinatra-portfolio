@@ -3,6 +3,10 @@
 
 <div id="your-ingredients-list">
   <h2>Your Ingredients</h2>
+    <% if @current_user.ingredients.empty? %>
+    You haven't listed any ingredients. 😢
+  <% end %>
+
   <ol>
     <% @current_user.ingredients.each do |ingredient| %>
     <li>

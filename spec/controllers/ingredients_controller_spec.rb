@@ -61,8 +61,40 @@ describe 'Ingredients Controller' do
       
         expect{post '/ingredients', params}.to change{Ingredient.all.count}.by(4)
       end
+
+      it "does not let a user create an ingredient they already have" do
+        User.first.ingredients << Ingredient.create(name: 'parsley')
+
+        params = {ingredients:[]}
+        ingredients = ['1st','2nd','3rd','4th','parsley','','','','','']
+        ingredients.each { |i| params[:ingredients] << { name: i } }
+        
+        post '/ingredients', params
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include("You cannot add parsley because you already have it.")
+        expect(User.first.ingredients.count).to eq(5)
+      end
       
-      it "redirects to the user's show page" do
+      it "does not let a user create multiple ingredients they already have" do
+        User.first.ingredients << Ingredient.create(name: 'parsley')
+        User.first.ingredients << Ingredient.create(name: 'cumin')
+
+        params = {ingredients:[]}
+        ingredients = ['1st','2nd','3rd','4th','parsley','cumin','','','','']
+        ingredients.each { |i| params[:ingredients] << { name: i } }
+        
+        post '/ingredients', params
+        expect(last_response.status).to eq(302)
+        follow_redirect!
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to include("You cannot add parsley because you already have it.")
+        expect(last_response.body).to include("You cannot add cumin because you already have it.")
+        expect(User.first.ingredients.count).to eq(6)
+      end
+      
+      it "redirects to the index page" do
         ingredients = ['1st','2nd','3rd','4th','','','','','','']
         params = {ingredients:[]}
         ingredients.each { |i| params[:ingredients] << { name: i } }
@@ -72,7 +104,7 @@ describe 'Ingredients Controller' do
         expect(last_response.status).to eq(302)
         follow_redirect!
         expect(last_response.status).to eq(200)
-        expect(last_response.body).to include("becky567's ingredients")
+        expect(last_response.body).to include("Lend Me Some Sugar")
       end
     end
   end
