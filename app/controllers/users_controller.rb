@@ -70,6 +70,7 @@ class UserController < ApplicationController
   get '/users/:slug' do
     if session[:id]
       @user = User.find_by_slug(params[:slug])
+      @current_user = current_user
       erb :'/users/show'
     else
       redirect '/'

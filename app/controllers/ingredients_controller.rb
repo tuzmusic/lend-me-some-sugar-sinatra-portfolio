@@ -43,7 +43,7 @@ class IngredientController < ApplicationController
   # Patch Action
   patch '/ingredients' do
 
-    if params[:ingredients].any? { |i| i[:name].empty?}
+    if params[:ingredients].any? { |i| i[:name].empty? }
       session[:flash] = "You cannot leave an existing ingredient blank. To delete ingredients, use the checkboxes."
       redirect 'ingredients/edit'
     else 
